@@ -5,4 +5,5 @@ package net.jiguo.mapper;
  */
 public interface StudentMapper {
 
+    public String test();
 }
