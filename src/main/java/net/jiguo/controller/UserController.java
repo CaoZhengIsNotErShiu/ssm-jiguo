@@ -23,4 +23,11 @@ public class UserController {
     public String login(){
         return "login";
     }
+
+
+    @RequestMapping(value = "regist",method = RequestMethod.GET)
+    @ApiOperation(value = "展示注册界面", notes = "展示注册界面", httpMethod = "GET")
+    public String showRegist(){
+        return "regist";
+    }
 }
