@@ -8,45 +8,46 @@
   <link href="css/style.css" rel="stylesheet"/>
   <script src="js/jquery.min.js"></script>
   <script>
-	/**表单验证是否密码相同**/
-	function check(form){
-		var p1 = form.psw1;
-		var p2 = form.psw2;
-		if (p1.value != p2.value) {
-			p2.oninvalid();
-			return false;
-		}
-		return true;
-	}
+      // $(function(){
+      //     $('#submit').off().on('click', function(){
+      //         alert(1)
+      //         $.ajax({
+      //             type: "POST",
+      //             dataType: "json",//预期服务器返回的数据类型
+      //             url:"/checkLogin",
+      //             data:$('#form1').serialize(),
+      //             success: function(data) {
+      //                 if(data.status == 'success'){
+		// 					console.log(data)
+      //                 }else if(data.status == 'fail'){
+      //                     $('#jsCompanyTips').html(data.msg)
+      //                 }
+      //             },
+      //         });
+      //     });
+      // })
 
-	window.onload = function() {
-		var p2 = document.forms["my_f1"].psw2;
-		p2.oninvalid = function() {
-			this.setCustomValidity("密码不一致，请重新输入");
-		}
-		p2.oninput = function() {
-			this.setCustomValidity("");
-		}
+      function login() {
+          $.ajax({
+              //几个参数需要注意一下
+              type: "POST",//方法类型
+              dataType: "json",//预期服务器返回的数据类型
+              url: "/checkLogin" ,//url
+              data: $('#form1').serialize(),
+              success: function (result) {
+                  console.log(result);//打印服务端返回的数据(调试用)
+                  if (result.resultCode == 200) {
+                      alert("SUCCESS");
+                  }
+                  ;
+                  return false;
+              },
+              error : function() {
+                  alert("异常！");
+              }
+          });
+      }
 
-	}
-
-	$(function(){
-		/**获取验证码 倒计时**/
-		var wait = 60;
-		function yzm(){
-			if(wait==0){
-				$(".getCode").text("获取验证码");
-				wait = 60;
-			}else{
-				wait--;
-				$(".getCode").text(wait+"秒后重新发送");
-				setTimeout(function(){yzm();},1000);
-			}
-		}
-		$(".getCode").click(function(){
-			yzm();
-		});
-	});
  </script>
  </head>
  <body>
@@ -72,14 +73,10 @@
 	<section class="report-box regMain">
 		<div class="wrap regBox">
 			<h2 class="title">登陆极果</h2>
-			<form class="regForm" name="my_f1" action="" method="post" onsubmit="return check(this);">
-
-				<p><input type="text" placeholder="请输入用户名" required="required"/></p>
-
-				<p><input type="password" placeholder="请输入新密码" required="required" name="psw1"/></p>
-
-
-				<p><button id="submit">登陆</button></p>
+			<form id="form1" class="regForm" name="my_f1" action="" method="post">
+				<p><input type="text" placeholder="请输入用户名" required="required" name="name"/></p>
+				<p><input type="password" placeholder="请输入新密码" required="required" name="password"/></p>
+				<p><input  id="submit" type="button" onclick="login()" value="登陆"></p>
 			</form>
 		</div>
 	</section>
