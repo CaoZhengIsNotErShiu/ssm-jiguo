@@ -10,6 +10,10 @@
  *      bottom:"auto"     //（可选）距离底部距离
  *    }
  */
+
+
+
+
 (function($){$.fn.extend({"backBtn":function(options){
     var ops=$.extend({
         isBack:true,

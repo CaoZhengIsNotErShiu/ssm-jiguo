@@ -9,6 +9,69 @@
   <script src="js/jquery.min.js"></script>
   <script src="js/common.js"></script>
  </head>
+ <script>
+
+	 //截取指定-
+     function getCaption(obj){
+         var index=obj.lastIndexOf("\-");
+         obj=obj.substring(index+1,obj.length);
+		//  console.log(obj);
+         return obj;
+     }
+
+     //设置cookie
+     function setCookie(cname, cvalue, exdays) {
+         var d = new Date();
+         d.setTime(d.getTime() + (exdays*24*60*60*1000));
+         var expires = "expires="+d.toUTCString();
+         document.cookie = cname + "=" + cvalue + "; " + expires+"; path=/";//path=/是根路径
+     }
+
+
+     //清除cookie
+     function clearCookie(name) {
+         alert(111)
+
+         setCookie(name, "", -1);
+         window.location.reload()
+     }
+     // 函数中的参数为 要获取的cookie键的名称。
+     $(function () {
+         function getCookie(name) {
+             var arr, reg = new RegExp("(^| )" + name + "=([^;]*)(;|$)");
+             if (arr = document.cookie.match(reg))
+                 return decodeURI(arr[2]);
+             else
+                 return null;
+         }
+         var user = getCookie("IMcookie");
+      	console.log("IMcookie="+user);
+         if (user!=null){
+             var name = getCaption(user)
+             $("#userInfo").show();
+             $("#userInfo").html(name + ',' + " 欢迎您！");
+             $("#register").hide();
+             $("#needLogin").hide();
+             $("#loginout").show();
+
+         }else {
+             $("#register").show();
+             $("#needLogin").show();
+             $("#loginout").hide();
+             $("#userInfo").hide();
+
+             return false
+         }
+         // if(user.roleId == 1) {
+         //     $("#buyerCenter").removeClass("sr-only")
+         // }else if(user.roleId == 2){
+         //     $("#sellerCenter").removeClass("sr-only")
+         //     $("#goods").removeClass("hidden")
+         // }
+
+     });
+
+ </script>
  <body>
 	<!--头部-->
 	<header class="header">
@@ -25,9 +88,21 @@
 					<li><a href="report/index.html">报告</a></li>
 				</ul>
 			</nav>
-			<a href="regist.html" class="login right">注册</a>
-			<a href="login.html" class="login right">登陆</a>
-			<a href="" class="search right">搜索</a>
+
+			<div class="notLoginBtns login-items fr">
+				<a id="loginout" class="login right" onclick="clearCookie('IMcookie')">退出</a>
+
+				<span style="width: 160px" class="login right" id="userInfo" ></span>
+				<input type="hidden" id="userId" name="userId">
+
+				<a id="register" class="login right" href="regist.html" >注册</a>
+				<a id="needLogin" class="login right" href="login.html" >登陆</a>
+
+				<a href="" class="search right">搜索</a>
+
+			</div>
+
+
 		</div>
 	</header>
 	<!--焦点图-->
