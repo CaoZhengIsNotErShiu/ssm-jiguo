@@ -35,7 +35,7 @@ public class DateTimeUtil {
 
     //日期转字符串
     public static String dateToString(Date date) {
-
+//        Date date = new Date();
         SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT_NORMAL);
         System.out.println(sdf.format(date));
         return sdf.format(date);

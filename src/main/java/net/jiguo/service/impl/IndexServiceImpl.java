@@ -7,6 +7,7 @@ import net.jiguo.util.DateTimeUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -23,11 +24,14 @@ public class IndexServiceImpl implements IndexServiceI {
 
     public List<JgTryItem> getHotUse() {
         List<JgTryItem> hotUses = indexMapper.getHotUse();
+        Date date = new Date();
         for (JgTryItem item: hotUses) {
-            String begin = DateTimeUtil.dateToString(item.getBeginDate());
+            //将活动开始时间，和结束时间转换成字符串
+            String begin = DateTimeUtil.dateToString(date);
             String end = DateTimeUtil.dateToString(item.getEndDate());
             int days = 0;
             try {
+                //计算出活动相差的天数
                  days = DateTimeUtil.getDayLength(begin, end);
             } catch (Exception e) {
                 e.printStackTrace();
