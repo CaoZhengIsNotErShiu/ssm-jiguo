@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+        <!DOCTYPE mapper
+                PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+                "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.jiguo.mapper.IndexMapper">
+<!--用户表-->
+<resultMap id="indexMap" type="net.jiguo.model.JgTryItem">
+    <id property="id" column="ID" jdbcType="INTEGER" />
+    <id property="title" column="title" jdbcType="VARCHAR" />
+    <id property="image" column="image" jdbcType="VARCHAR" />
+    <id property="quantity" column="quantity" jdbcType="INTEGER" />
+    <result property="beginDate" column="begin_date" jdbcType="DATE" />
+    <result property="endDate" column="end_date" jdbcType="DATE" />
+    <result property="price" column="price" jdbcType="DOUBLE" />
+</resultMap>
+
+<select id="getHotUse" resultMap="indexMap" parameterType="net.jiguo.model.JgTryItem">
+SELECT
+    *
+FROM
+    data.jg_try_item;
+</select>
+
+
+</mapper>
