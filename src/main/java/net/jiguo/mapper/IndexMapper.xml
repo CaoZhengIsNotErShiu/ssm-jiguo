@@ -6,9 +6,9 @@
 <!--用户表-->
 <resultMap id="indexMap" type="net.jiguo.model.JgTryItem">
     <id property="id" column="ID" jdbcType="INTEGER" />
-    <id property="title" column="title" jdbcType="VARCHAR" />
-    <id property="image" column="image" jdbcType="VARCHAR" />
-    <id property="quantity" column="quantity" jdbcType="INTEGER" />
+    <result property="title" column="title" jdbcType="VARCHAR" />
+    <result property="image" column="image" jdbcType="VARCHAR" />
+    <result property="quantity" column="quantity" jdbcType="INTEGER" />
     <result property="beginDate" column="begin_date" jdbcType="DATE" />
     <result property="endDate" column="end_date" jdbcType="DATE" />
     <result property="price" column="price" jdbcType="DOUBLE" />
@@ -20,6 +20,8 @@ SELECT
 FROM
     data.jg_try_item;
 </select>
+
+
 
 
 </mapper>

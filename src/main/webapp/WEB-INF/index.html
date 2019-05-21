@@ -11,6 +11,7 @@
 </head>
 <script>
 
+
     //截取指定-
     function getCaption(obj){
         var index=obj.lastIndexOf("\-");
@@ -27,6 +28,14 @@
         document.cookie = cname + "=" + cvalue + "; " + expires+"; path=/";//path=/是根路径
     }
 
+    //获取cookie
+    function getCookie(name) {
+        var arr, reg = new RegExp("(^| )" + name + "=([^;]*)(;|$)");
+        if (arr = document.cookie.match(reg))
+            return decodeURI(arr[2]);
+        else
+            return null;
+    }
 
     //清除cookie
     function clearCookie(name) {
@@ -37,13 +46,7 @@
     }
     // 函数中的参数为 要获取的cookie键的名称。
     $(function () {
-        function getCookie(name) {
-            var arr, reg = new RegExp("(^| )" + name + "=([^;]*)(;|$)");
-            if (arr = document.cookie.match(reg))
-                return decodeURI(arr[2]);
-            else
-                return null;
-        }
+
         var user = getCookie("IMcookie");
         console.log("IMcookie="+user);
         if (user!=null){
@@ -60,10 +63,13 @@
             $("#loginout").hide();
             $("#userInfo").hide();
 
-            return false
         }
+
+
         //init热门试用
         getHotUse();
+        //init精选报告
+        getReportSelected();
         // if(user.roleId == 1) {
         //     $("#buyerCenter").removeClass("sr-only")
         // }else if(user.roleId == 2){
@@ -72,7 +78,13 @@
         // }
 
     });
+    //点赞
+    // $(".zan").live('click', function(){
+    //     // $(this).toggleClass('background:url(img/zan1.png) no-repeat left 4px;');
+    //     this.attr("background:url","/img/zan1.png");
+    // });
 
+    //热门试用
     function getHotUse() {
         $.ajax({
             //几个参数需要注意一下
@@ -85,11 +97,11 @@
                 $.each(result.data,function(i,n){
                     if (i == 0 ){
                         str+="<dl class='on'>";
-					}
+                    }
                     if (i!=0 && i%4 == 0 && result.data.length != i+1){
                         str+="</dl>";
                         str+="<dl>";
-					}
+                    }
                     str+="<dt>";
                     str+= "<a href='use/detail.html'>";
                     str+='<span class=\"top-tip shoufa\">'+n.category+'</span>';
@@ -118,6 +130,91 @@
         });
     }
 
+
+        $(".zan").live('click', function(){
+
+            var user = getCookie("IMcookie");
+            if (user == null){
+                alert("您还没有登录，请先登录！")
+			} else {
+                var imgid = $(this).attr("id");
+                var test1 = $("#" + imgid).css("backgroundImage").replace('url(', '').replace(')', '');
+                if (test1.indexOf("zan1.png") != -1) {
+                    $("#" + imgid).css("background", "url('css/img/zan.png') no-repeat left 4px");
+                    $.ajax({
+                        //几个参数需要注意一下
+                        type: "get",//方法类型
+                        data: {user:user, reportId:imgid},//用户信息
+                        dataType: "json",//预期服务器返回的数据类型
+                        url: "/report/getReportThumbByUserId" ,//url
+                        success: function (result) {
+                            console.log(result.data)
+                            $("#" + imgid).text(result.data);
+                        },
+                        error : function() {
+                            alert("异常！");
+                        }
+                    });
+                } else {
+                    $("#" + imgid).css("background", "url('css/img/zan1.png') no-repeat left 4px");
+                    $.ajax({
+                        //几个参数需要注意一下
+                        type: "get",//方法类型
+                        data: {user:user, reportId:imgid},//用户信息
+                        dataType: "json",//预期服务器返回的数据类型
+                        url: "/report/getReportThumbByUserId" ,//url
+                        success: function (result) {
+                            console.log(result)
+
+                            $("#" + imgid).text(result.data);
+                        },
+                        error : function() {
+                            alert("异常！");
+                        }
+                    });
+                }
+            }
+    });
+    //精选报告
+    function getReportSelected() {
+        var user = getCookie("IMcookie");
+        $.ajax({
+            //几个参数需要注意一下
+            type: "get",//方法类型
+			data: {user:user},//用户信息
+            dataType: "json",//预期服务器返回的数据类型
+            url: "/report/getReportSelected" ,//url
+            success: function (result) {
+
+                var str="";
+                $.each(result.data,function(i,n){
+                    str+="<li>";
+                    str+='<a>';
+                    str+='<img src="img/'+n.image+'" width="220" height="130"/>';
+                    str+='<div class="info">';
+                    str+='<p class="name">'+n.title+'</p>';
+                    str+='<div class="tip fix">';
+                    str+='<span class="nick left">● '+n.name+'</span>';
+                    str+='<div class="right icon">';
+                    if (n.isThumb == 0){
+                        str+='<span id="'+n.id+'" class="zan" style="background:url(css/img/zan.png) no-repeat left 4px">'+n.thumb+'</span>';
+                    } else{
+                        str+='<span id="'+n.id+'" class="zan" style="background:url(css/img/zan1.png) no-repeat left 4px">'+n.thumb+'</span>';
+					}
+                    str+='<span class="look">'+n.comment+'</span>';
+                    str+='</div>';
+                    str+='</div>';
+                    str+='</div>';
+                    str+='</a>';
+                    str+="</li>";
+                });
+                $("#reportSelected").append(str);
+            },
+            error : function() {
+                alert("异常！");
+            }
+        });
+    }
 </script>
 <body>
 <!--头部-->
@@ -175,212 +272,7 @@
 		<a href="javascript:void(0);" class="next"></a>
 		<div class="hot-slide">
 			<div id="hotuse" class="slide-box use">
-				<!--<dl class="on">-->
-					<!--<dt>-->
-						<!--<a href="use/detail.html">-->
-							<!--<span class="top-tip shoufa">首发</span>-->
-							<!--<img src="img/hot1.jpg" width="220" height="130"/>-->
-							<!--<div class="hot-con">-->
-								<!--<h2 class="name">巴慕达 The Toaster 烤面包机</h2>-->
-								<!--<p class="tabs red">-->
-									<!--<span>2032</span>-->
-									<!--<span>20台</span>-->
-								<!--</p>-->
-								<!--<p class="sq"><span>1392</span>申请</p>-->
-								<!--<p class="current red">剩余时间2天</p>-->
-							<!--</div>-->
-						<!--</a>-->
-					<!--</dt>-->
-				<!--</dl>-->
-				<!--&lt;!&ndash;循环第一&ndash;&gt;-->
-				<!--<dl class="on">-->
-				<!--<dt>-->
-				<!--<a href="use/detail.html">-->
-				<!--<span class="top-tip shoufa">首发</span>-->
-				<!--<img src="img/hot1.jpg" width="220" height="130"/>-->
-				<!--<div class="hot-con">-->
-				<!--<h2 class="name">巴慕达 The Toaster 烤面包机</h2>-->
-				<!--<p class="tabs red">-->
-				<!--<span>2032</span>-->
-				<!--<span>20台</span>-->
-				<!--</p>-->
-				<!--<p class="sq"><span>1392</span>申请</p>-->
-				<!--<p class="current red">剩余时间2天</p>-->
-				<!--</div>-->
-				<!--</a>-->
-				<!--</dt>-->
-				<!--<dt>-->
-				<!--<a href="use/detail.html">-->
-				<!--<span class="top-tip tys">体验师专享</span>-->
-				<!--<img src="img/hot2.jpg" width="220" height="130"/>-->
-				<!--<div class="hot-con">-->
-				<!--<h2 class="name">Osprey小鹰户外运动专业腰包</h2>-->
-				<!--<p class="tabs green">-->
-				<!--<span>2032</span>-->
-				<!--<span>20台</span>-->
-				<!--</p>-->
-				<!--<p class="sq"><span>1392</span>申请</p>-->
-				<!--<p class="current green">查看试用名单</p>-->
-				<!--</div>-->
-				<!--</a>-->
-				<!--</dt>-->
-				<!--<dt>-->
-				<!--<a href="use/detail.html">-->
-				<!--<span class="top-tip shoufa">首发</span>-->
-				<!--<img src="img/hot3.jpg" width="220" height="130"/>-->
-				<!--<div class="hot-con">-->
-				<!--<h2 class="name">Liquid Image 338 运动摄像眼镜</h2>-->
-				<!--<p class="tabs red">-->
-				<!--<span>2032</span>-->
-				<!--<span>20台</span>-->
-				<!--</p>-->
-				<!--<p class="sq"><span>1392</span>申请</p>-->
-				<!--<p class="current red">剩余时间2天</p>-->
-				<!--</div>-->
-				<!--</a>-->
-				<!--</dt>-->
-				<!--<dt>-->
-				<!--<a href="use/detail.html">-->
-				<!--<span class="top-tip shoufa">首发</span>-->
-				<!--<img src="img/hot4.jpg" width="220" height="130"/>-->
-				<!--<div class="hot-con">-->
-				<!--<h2 class="name">巴慕达 The Toaster 烤面包机</h2>-->
-				<!--<p class="tabs red">-->
-				<!--<span>2032</span>-->
-				<!--<span>20台</span>-->
-				<!--</p>-->
-				<!--<p class="sq"><span>1392</span>申请</p>-->
-				<!--<p class="current red">剩余时间2天</p>-->
-				<!--</div>-->
-				<!--</a>-->
-				<!--</dt>-->
-				<!--</dl>-->
-				<!--&lt;!&ndash;循环第二&ndash;&gt;-->
-				<!--<dl>-->
-				<!--<dt>-->
-				<!--<a href="use/detail.html">-->
-				<!--<span class="top-tip shoufa">首发</span>-->
-				<!--<img src="img/hot5.jpg" width="220" height="130"/>-->
-				<!--<div class="hot-con">-->
-				<!--<h2 class="name">巴慕达 The Toaster 烤面包机</h2>-->
-				<!--<p class="tabs red">-->
-				<!--<span>2032</span>-->
-				<!--<span>20台</span>-->
-				<!--</p>-->
-				<!--<p class="sq"><span>1392</span>申请</p>-->
-				<!--<p class="current red">剩余时间2天</p>-->
-				<!--</div>-->
-				<!--</a>-->
-				<!--</dt>-->
-				<!--<dt>-->
-				<!--<a href="use/detail.html">-->
-				<!--<span class="top-tip tys">体验师专享</span>-->
-				<!--<img src="img/hot6.jpg" width="220" height="130"/>-->
-				<!--<div class="hot-con">-->
-				<!--<h2 class="name">Osprey小鹰户外运动专业腰包</h2>-->
-				<!--<p class="tabs green">-->
-				<!--<span>2032</span>-->
-				<!--<span>20台</span>-->
-				<!--</p>-->
-				<!--<p class="sq"><span>1392</span>申请</p>-->
-				<!--<p class="current green">查看试用名单</p>-->
-				<!--</div>-->
-				<!--</a>-->
-				<!--</dt>-->
-				<!--<dt>-->
-				<!--<a href="use/detail.html">-->
-				<!--<span class="top-tip shoufa">首发</span>-->
-				<!--<img src="img/hot7.jpg" width="220" height="130"/>-->
-				<!--<div class="hot-con">-->
-				<!--<h2 class="name">Liquid Image 338 运动摄像眼镜</h2>-->
-				<!--<p class="tabs red">-->
-				<!--<span>2032</span>-->
-				<!--<span>20台</span>-->
-				<!--</p>-->
-				<!--<p class="sq"><span>1392</span>申请</p>-->
-				<!--<p class="current red">剩余时间2天</p>-->
-				<!--</div>-->
-				<!--</a>-->
-				<!--</dt>-->
-				<!--<dt>-->
-				<!--<a href="use/detail.html">-->
-				<!--<span class="top-tip shoufa">首发</span>-->
-				<!--<img src="img/hot8.jpg" width="220" height="130"/>-->
-				<!--<div class="hot-con">-->
-				<!--<h2 class="name">巴慕达 The Toaster 烤面包机</h2>-->
-				<!--<p class="tabs red">-->
-				<!--<span>2032</span>-->
-				<!--<span>20台</span>-->
-				<!--</p>-->
-				<!--<p class="sq"><span>1392</span>申请</p>-->
-				<!--<p class="current red">剩余时间2天</p>-->
-				<!--</div>-->
-				<!--</a>-->
-				<!--</dt>-->
-				<!--</dl>-->
-				<!--&lt;!&ndash;循环第三&ndash;&gt;-->
-				<!--<dl>-->
-				<!--<dt>-->
-				<!--<a href="use/detail.html">-->
-				<!--<span class="top-tip shoufa">首发</span>-->
-				<!--<img src="img/hot9.jpg" width="220" height="130"/>-->
-				<!--<div class="hot-con">-->
-				<!--<h2 class="name">巴慕达 The Toaster 烤面包机</h2>-->
-				<!--<p class="tabs red">-->
-				<!--<span>2032</span>-->
-				<!--<span>20台</span>-->
-				<!--</p>-->
-				<!--<p class="sq"><span>1392</span>申请</p>-->
-				<!--<p class="current red">剩余时间2天</p>-->
-				<!--</div>-->
-				<!--</a>-->
-				<!--</dt>-->
-				<!--<dt>-->
-				<!--<a href="use/detail.html">-->
-				<!--<span class="top-tip tys">体验师专享</span>-->
-				<!--<img src="img/hot10.jpg" width="220" height="130"/>-->
-				<!--<div class="hot-con">-->
-				<!--<h2 class="name">Osprey小鹰户外运动专业腰包</h2>-->
-				<!--<p class="tabs green">-->
-				<!--<span>2032</span>-->
-				<!--<span>20台</span>-->
-				<!--</p>-->
-				<!--<p class="sq"><span>1392</span>申请</p>-->
-				<!--<p class="current green">查看试用名单</p>-->
-				<!--</div>-->
-				<!--</a>-->
-				<!--</dt>-->
-				<!--<dt>-->
-				<!--<a href="use/detail.html">-->
-				<!--<span class="top-tip shoufa">首发</span>-->
-				<!--<img src="img/hot11.jpg" width="220" height="130"/>-->
-				<!--<div class="hot-con">-->
-				<!--<h2 class="name">Liquid Image 338 运动摄像眼镜</h2>-->
-				<!--<p class="tabs red">-->
-				<!--<span>2032</span>-->
-				<!--<span>20台</span>-->
-				<!--</p>-->
-				<!--<p class="sq"><span>1392</span>申请</p>-->
-				<!--<p class="current red">剩余时间2天</p>-->
-				<!--</div>-->
-				<!--</a>-->
-				<!--</dt>-->
-				<!--<dt>-->
-				<!--<a href="use/detail.html">-->
-				<!--<span class="top-tip shoufa">首发</span>-->
-				<!--<img src="img/hot12.jpg" width="220" height="130"/>-->
-				<!--<div class="hot-con">-->
-				<!--<h2 class="name">巴慕达 The Toaster 烤面包机</h2>-->
-				<!--<p class="tabs red">-->
-				<!--<span>2032</span>-->
-				<!--<span>20台</span>-->
-				<!--</p>-->
-				<!--<p class="sq"><span>1392</span>申请</p>-->
-				<!--<p class="current red">剩余时间2天</p>-->
-				<!--</div>-->
-				<!--</a>-->
-				<!--</dt>-->
-				<!--</dl>-->
+
 			</div>
 		</div>
 	</div>
@@ -389,127 +281,127 @@
 <section class="report-box">
 	<div class="wrap report common">
 		<div class="title">报告精选<a href="" class="more">查看更多</a></div>
-		<ul>
-			<li>
-				<a href="guid/detail.html">
-					<img src="img/re1.jpg" width="220" height="130"/>
-					<div class="info">
-						<p class="name">空气净化器里面学问多得惊呆你，你选对了吗？</p>
-						<div class="tip fix">
-							<span class="nick left">● 苏苏</span>
-							<div class="right icon">
-								<span class="zan">3</span>
-								<span class="look">3</span>
-							</div>
-						</div>
-					</div>
-				</a>
-			</li>
-			<li>
-				<a href="guid/detail.html">
-					<img src="img/re2.jpg" width="220" height="130"/>
-					<div class="info">
-						<p class="name">怎么骑都不会累的智能自行车：云马 C1试骑体验</p>
-						<div class="tip fix">
-							<span class="nick left">● 好吗</span>
-							<div class="right icon">
-								<span class="zan">3</span>
-								<span class="look">3</span>
-							</div>
-						</div>
-					</div>
-				</a>
-			</li>
-			<li>
-				<a href="guid/detail.html">
-					<img src="img/re3.jpg" width="220" height="130"/>
-					<div class="info">
-						<p class="name">声音不是最优秀，但它形音完美的结合，足够打动人心</p>
-						<div class="tip fix">
-							<span class="nick left">● iAra</span>
-							<div class="right icon">
-								<span class="zan">3</span>
-								<span class="look">3</span>
-							</div>
-						</div>
-					</div>
-				</a>
-			</li>
-			<li>
-				<a href="guid/detail.html">
-					<img src="img/re1.jpg" width="220" height="130"/>
-					<div class="info">
-						<p class="name">风光大片信手拈来！vivo X6Plus不只是快，还是一台拍照利器</p>
-						<div class="tip fix">
-							<span class="nick left">● 苏苏</span>
-							<div class="right icon">
-								<span class="zan">3</span>
-								<span class="look">3</span>
-							</div>
-						</div>
-					</div>
-				</a>
-			</li>
-			<li>
-				<a href="guid/detail.html">
-					<img src="img/re2.jpg" width="220" height="130"/>
-					<div class="info">
-						<p class="name">空气净化器里面学问多得惊呆你，你选对了吗？</p>
-						<div class="tip fix">
-							<span class="nick left">● 苏苏</span>
-							<div class="right icon">
-								<span class="zan">3</span>
-								<span class="look">3</span>
-							</div>
-						</div>
-					</div>
-				</a>
-			</li>
-			<li>
-				<a href="guid/detail.html">
-					<img src="img/re3.jpg" width="220" height="130"/>
-					<div class="info">
-						<p class="name">声音不是最优秀，但它形音完美的结合，足够打动人心</p>
-						<div class="tip fix">
-							<span class="nick left">● 苏苏</span>
-							<div class="right icon">
-								<span class="zan">3</span>
-								<span class="look">3</span>
-							</div>
-						</div>
-					</div>
-				</a>
-			</li>
-			<li>
-				<a href="guid/detail.html">
-					<img src="img/re1.jpg" width="220" height="130"/>
-					<div class="info">
-						<p class="name">怎么骑都不会累的智能自行车：云马 C1试骑体验</p>
-						<div class="tip fix">
-							<span class="nick left">● 苏苏</span>
-							<div class="right icon">
-								<span class="zan">3</span>
-								<span class="look">3</span>
-							</div>
-						</div>
-					</div>
-				</a>
-			</li>
-			<li>
-				<a href="guid/detail.html">
-					<img src="img/re2.jpg" width="220" height="130"/>
-					<div class="info">
-						<p class="name">空气净化器里面学问多得惊呆你，你选对了吗？</p>
-						<div class="tip fix">
-							<span class="nick left">● 苏苏</span>
-							<div class="right icon">
-								<span class="zan">3</span>
-								<span class="look">3</span>
-							</div>
-						</div>
-					</div>
-				</a>
-			</li>
+		<ul id="reportSelected">
+			<!--<li>-->
+			<!--<a href="guid/detail.html">-->
+			<!--<img src="img/re1.jpg" width="220" height="130"/>-->
+			<!--<div class="info">-->
+			<!--<p class="name">空气净化器里面学问多得惊呆你，你选对了吗？</p>-->
+			<!--<div class="tip fix">-->
+			<!--<span class="nick left">● 苏苏</span>-->
+			<!--<div class="right icon">-->
+			<!--<span class="zan">3</span>-->
+			<!--<span class="look">3</span>-->
+			<!--</div>-->
+			<!--</div>-->
+			<!--</div>-->
+			<!--</a>-->
+			<!--</li>-->
+			<!--<li>-->
+			<!--<a href="guid/detail.html">-->
+			<!--<img src="img/re2.jpg" width="220" height="130"/>-->
+			<!--<div class="info">-->
+			<!--<p class="name">怎么骑都不会累的智能自行车：云马 C1试骑体验</p>-->
+			<!--<div class="tip fix">-->
+			<!--<span class="nick left">● 好吗</span>-->
+			<!--<div class="right icon">-->
+			<!--<span class="zan">3</span>-->
+			<!--<span class="look">3</span>-->
+			<!--</div>-->
+			<!--</div>-->
+			<!--</div>-->
+			<!--</a>-->
+			<!--</li>-->
+			<!--<li>-->
+			<!--<a href="guid/detail.html">-->
+			<!--<img src="img/re3.jpg" width="220" height="130"/>-->
+			<!--<div class="info">-->
+			<!--<p class="name">声音不是最优秀，但它形音完美的结合，足够打动人心</p>-->
+			<!--<div class="tip fix">-->
+			<!--<span class="nick left">● iAra</span>-->
+			<!--<div class="right icon">-->
+			<!--<span class="zan">3</span>-->
+			<!--<span class="look">3</span>-->
+			<!--</div>-->
+			<!--</div>-->
+			<!--</div>-->
+			<!--</a>-->
+			<!--</li>-->
+			<!--<li>-->
+			<!--<a href="guid/detail.html">-->
+			<!--<img src="img/re1.jpg" width="220" height="130"/>-->
+			<!--<div class="info">-->
+			<!--<p class="name">风光大片信手拈来！vivo X6Plus不只是快，还是一台拍照利器</p>-->
+			<!--<div class="tip fix">-->
+			<!--<span class="nick left">● 苏苏</span>-->
+			<!--<div class="right icon">-->
+			<!--<span class="zan">3</span>-->
+			<!--<span class="look">3</span>-->
+			<!--</div>-->
+			<!--</div>-->
+			<!--</div>-->
+			<!--</a>-->
+			<!--</li>-->
+			<!--<li>-->
+			<!--<a href="guid/detail.html">-->
+			<!--<img src="img/re2.jpg" width="220" height="130"/>-->
+			<!--<div class="info">-->
+			<!--<p class="name">空气净化器里面学问多得惊呆你，你选对了吗？</p>-->
+			<!--<div class="tip fix">-->
+			<!--<span class="nick left">● 苏苏</span>-->
+			<!--<div class="right icon">-->
+			<!--<span class="zan">3</span>-->
+			<!--<span class="look">3</span>-->
+			<!--</div>-->
+			<!--</div>-->
+			<!--</div>-->
+			<!--</a>-->
+			<!--</li>-->
+			<!--<li>-->
+			<!--<a href="guid/detail.html">-->
+			<!--<img src="img/re3.jpg" width="220" height="130"/>-->
+			<!--<div class="info">-->
+			<!--<p class="name">声音不是最优秀，但它形音完美的结合，足够打动人心</p>-->
+			<!--<div class="tip fix">-->
+			<!--<span class="nick left">● 苏苏</span>-->
+			<!--<div class="right icon">-->
+			<!--<span class="zan">3</span>-->
+			<!--<span class="look">3</span>-->
+			<!--</div>-->
+			<!--</div>-->
+			<!--</div>-->
+			<!--</a>-->
+			<!--</li>-->
+			<!--<li>-->
+			<!--<a href="guid/detail.html">-->
+			<!--<img src="img/re1.jpg" width="220" height="130"/>-->
+			<!--<div class="info">-->
+			<!--<p class="name">怎么骑都不会累的智能自行车：云马 C1试骑体验</p>-->
+			<!--<div class="tip fix">-->
+			<!--<span class="nick left">● 苏苏</span>-->
+			<!--<div class="right icon">-->
+			<!--<span class="zan">3</span>-->
+			<!--<span class="look">3</span>-->
+			<!--</div>-->
+			<!--</div>-->
+			<!--</div>-->
+			<!--</a>-->
+			<!--</li>-->
+			<!--<li>-->
+			<!--<a href="guid/detail.html">-->
+			<!--<img src="img/re2.jpg" width="220" height="130"/>-->
+			<!--<div class="info">-->
+			<!--<p class="name">空气净化器里面学问多得惊呆你，你选对了吗？</p>-->
+			<!--<div class="tip fix">-->
+			<!--<span class="nick left">● 苏苏</span>-->
+			<!--<div class="right icon">-->
+			<!--<span class="zan">3</span>-->
+			<!--<span class="look">3</span>-->
+			<!--</div>-->
+			<!--</div>-->
+			<!--</div>-->
+			<!--</a>-->
+			<!--</li>-->
 		</ul>
 	</div>
 </section>

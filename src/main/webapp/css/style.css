@@ -45,7 +45,7 @@ nav .on a{color:#fe5341;}
 .common .info .name span{color:#a3a3a3;}
 .common .info .price{color:#fe5341;}
 .common .info .tip{color:#a3a3a3;}
-.icon .zan{background:url(img/zan.png) no-repeat left 4px;}
+/*.icon .zan{background:url(img/zan.png) no-repeat left 4px;}*/
 .icon .look{background:url(img/reply.png) no-repeat left center;}
 .icon .xin{background:url(img/xin.png) no-repeat left center;}
 .listInfo li .info{background:rgba(255,255,255,.9);}

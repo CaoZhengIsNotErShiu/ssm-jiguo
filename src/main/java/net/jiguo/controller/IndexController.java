@@ -3,6 +3,7 @@ package net.jiguo.controller;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import net.jiguo.model.JgTryItem;
+import net.jiguo.model.JgTryReport;
 import net.jiguo.service.IndexServiceI;
 import net.jiguo.util.HttpResult;
 import org.apache.commons.collections.CollectionUtils;
@@ -48,4 +49,6 @@ public class IndexController {
         }
         return httpResult;
     }
+
+
 }

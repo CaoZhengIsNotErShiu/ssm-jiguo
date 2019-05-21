@@ -2,6 +2,7 @@ package net.jiguo.service.impl;
 
 import net.jiguo.mapper.IndexMapper;
 import net.jiguo.model.JgTryItem;
+import net.jiguo.model.JgTryReport;
 import net.jiguo.service.IndexServiceI;
 import net.jiguo.util.DateTimeUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +23,7 @@ public class IndexServiceImpl implements IndexServiceI {
     @Autowired
     private IndexMapper indexMapper;
 
+    //热门试用
     public List<JgTryItem> getHotUse() {
         List<JgTryItem> hotUses = indexMapper.getHotUse();
         Date date = new Date();
@@ -40,4 +42,6 @@ public class IndexServiceImpl implements IndexServiceI {
         }
         return hotUses;
     }
+
+
 }

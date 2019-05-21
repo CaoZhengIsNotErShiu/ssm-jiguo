@@ -6,7 +6,7 @@
 <!--用户表-->
 <resultMap id="userMap" type="net.jiguo.model.User">
     <id property="id" column="ID" jdbcType="INTEGER" />
-    <id property="name" column="NAME" jdbcType="VARCHAR" />
+    <result property="name" column="NAME" jdbcType="VARCHAR" />
     <result property="password" column="PASSWORD" jdbcType="VARCHAR" />
     <result property="state" column="state" jdbcType="INTEGER" />
 </resultMap>

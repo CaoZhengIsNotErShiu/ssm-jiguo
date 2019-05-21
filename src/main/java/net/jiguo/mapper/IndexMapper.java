@@ -1,6 +1,7 @@
 package net.jiguo.mapper;
 
 import net.jiguo.model.JgTryItem;
+import net.jiguo.model.JgTryReport;
 
 import java.util.List;
 
@@ -11,5 +12,8 @@ import java.util.List;
  * @Version 1.0
  */
 public interface IndexMapper {
+
+    //热门试用
     List<JgTryItem> getHotUse();
+
 }
