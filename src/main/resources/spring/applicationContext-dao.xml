@@ -17,12 +17,27 @@
         <property name="maxActive" value="10"/>
         <!--限制mysql最小连接数-->
         <property name="minIdle" value="3"/>
+
+
     </bean>
 
     <!--sqlSessionFactory-->
     <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
         <property name="configLocation" value="classpath:sqlMappingConfig.xml"/>
         <property name="dataSource" ref="dataSource"/>
+        <!-- 配置分页插件 -->
+        <property name="plugins">
+            <array>
+                <bean class="com.github.pagehelper.PageHelper">
+                    <property name="properties">
+                        <value>
+                            dialect=mysql
+                            reasonable=true
+                        </value>
+                    </property>
+                </bean>
+            </array>
+        </property>
     </bean>
 
     <!--扫描Mapper文件-->

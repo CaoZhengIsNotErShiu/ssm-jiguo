@@ -9,6 +9,52 @@
   <link href="../css/style.css" rel="stylesheet"/>
   <script src="../js/jquery.min.js"></script>
   <script src="../js/common.js"></script>
+	 <script>
+         $(function () {
+             //init最新
+             getGuideNewest(1);
+         });
+
+         function getGuideNewest(index) {
+             $.ajax({
+                 //几个参数需要注意一下
+                 type: "get",//方法类型
+                 dataType: "json",//预期服务器返回的数据类型
+				 data:{pn:index},
+                 url: "/guid/newest" ,//url
+                 success: function (result) {
+                     console.log(result)
+                     var str="";
+                     $.each(result.data.list,function(i,n){
+                     	str+="<li>"
+						 str+='<a href="detail.html">';
+                         str+='<img src="../img/'+n.image+'" width="220" height="130"/>';
+                         str+='<div class="info">';
+                         str+='<p class="name">'+n.title+'</p>';
+                         str+='<div class="tip fix">';
+                         str+='<div class="right icon">';
+                         str+='<span class="xin">'+n.guideThumb+'</span>';
+                         str+='<span class="look">'+n.guideComment+'</span>';
+                         str+='</div>';
+                         str+='</div>';
+                         str+='</div>';
+                         str+='</a>';
+                         str+='</li>';
+                     });
+                     if (result.data.pageNum == result.data.pages){
+                         $("#pageNum").removeAttr("onclick");
+                         $("#pageNum").text("---我是您可爱的底线呢！---");
+					 } else {
+                         $("#pageNum").attr("onclick","getGuideNewest("+result.data.pageNum+"+1)");
+                     }
+                     $("#myDiv").append(str);
+                 },
+                 error : function() {
+                     alert("异常！");
+                 }
+             });
+         }
+	 </script>
  </head>
  <body>
 	<!--头部-->
@@ -42,233 +88,10 @@
 	<section class="report-box">
 		<div class="wrap guide common pad25">
 			<ul id="myDiv">
-				<li>
-					<a href="detail.html">
-						<img src="../img/g1.jpg" width="220" height="130"/>
-						<div class="info">
-							<p class="name">花万元把蜗居秒变“豪宅”？这12件家具就能帮你办到</p>
-							<div class="tip fix">
-								<div class="right icon">
-									<span class="xin">3</span>
-									<span class="look">3</span>
-								</div>
-							</div>
-						</div>
-					</a>
-				</li>
-				<li>
-					<a href="detail.html">
-						<img src="../img/g2.jpg" width="220" height="130"/>
-						<div class="info">
-							<p class="name">到底有没有完美的iPhone手机配件，答案都在这里</p>
-							<div class="tip fix">
-								<div class="right icon">
-									<span class="xin">3</span>
-									<span class="look">3</span>
-								</div>
-							</div>
-						</div>
-					</a>
-				</li>
-				<li>
-					<a href="detail.html">
-						<img src="../img/g3.jpg" width="220" height="130"/>
-						<div class="info">
-							<p class="name">2016，这8支钢笔够你装逼一整年</p>
-							<div class="tip fix">
-								<div class="right icon">
-									<span class="xin">3</span>
-									<span class="look">3</span>
-								</div>
-							</div>
-						</div>
-					</a>
-				</li>
-				<li>
-					<a href="detail.html">
-						<img src="../img/g4.jpg" width="220" height="130"/>
-						<div class="info">
-							<p class="name">他用12年找一把完美 剃须刀，给你2万字终极购买指南</p>
-							<div class="tip fix">
-								<div class="right icon">
-									<span class="xin">3</span>
-									<span class="look">3</span>
-								</div>
-							</div>
-						</div>
-					</a>
-				</li>
-				<li>
-					<a href="detail.html">
-						<img src="../img/g1.jpg" width="220" height="130"/>
-						<div class="info">
-							<p class="name">花万元把蜗居秒变“豪宅”？这12件家具就能帮你办到</p>
-							<div class="tip fix">
-								<div class="right icon">
-									<span class="xin">3</span>
-									<span class="look">3</span>
-								</div>
-							</div>
-						</div>
-					</a>
-				</li>
-				<li>
-					<a href="">
-						<img src="../img/g2.jpg" width="220" height="130"/>
-						<div class="info">
-							<p class="name">到底有没有完美的iPhone手机配件，答案都在这里</p>
-							<div class="tip fix">
-								<div class="right icon">
-									<span class="xin">3</span>
-									<span class="look">3</span>
-								</div>
-							</div>
-						</div>
-					</a>
-				</li>
-				<li>
-					<a href="detail.html">
-						<img src="../img/g3.jpg" width="220" height="130"/>
-						<div class="info">
-							<p class="name">2016，这8支钢笔够你装逼一整年</p>
-							<div class="tip fix">
-								<div class="right icon">
-									<span class="xin">3</span>
-									<span class="look">3</span>
-								</div>
-							</div>
-						</div>
-					</a>
-				</li>
-				<li>
-					<a href="detail.html">
-						<img src="../img/g4.jpg" width="220" height="130"/>
-						<div class="info">
-							<p class="name">他用12年找一把完美 剃须刀，给你2万字终极购买指南</p>
-							<div class="tip fix">
-								<div class="right icon">
-									<span class="xin">3</span>
-									<span class="look">3</span>
-								</div>
-							</div>
-						</div>
-					</a>
-				</li>
-				<li>
-					<a href="detail.html">
-						<img src="../img/g1.jpg" width="220" height="130"/>
-						<div class="info">
-							<p class="name">花万元把蜗居秒变“豪宅”？这12件家具就能帮你办到</p>
-							<div class="tip fix">
-								<div class="right icon">
-									<span class="xin">3</span>
-									<span class="look">3</span>
-								</div>
-							</div>
-						</div>
-					</a>
-				</li>
-				<li>
-					<a href="detail.html">
-						<img src="../img/g2.jpg" width="220" height="130"/>
-						<div class="info">
-							<p class="name">到底有没有完美的iPhone手机配件，答案都在这里</p>
-							<div class="tip fix">
-								<div class="right icon">
-									<span class="xin">3</span>
-									<span class="look">3</span>
-								</div>
-							</div>
-						</div>
-					</a>
-				</li>
-				<li>
-					<a href="detail.html">
-						<img src="../img/g3.jpg" width="220" height="130"/>
-						<div class="info">
-							<p class="name">2016，这8支钢笔够你装逼一整年</p>
-							<div class="tip fix">
-								<div class="right icon">
-									<span class="xin">3</span>
-									<span class="look">3</span>
-								</div>
-							</div>
-						</div>
-					</a>
-				</li>
-				<li>
-					<a href="detail.html">
-						<img src="../img/g4.jpg" width="220" height="130"/>
-						<div class="info">
-							<p class="name">他用12年找一把完美 剃须刀，给你2万字终极购买指南</p>
-							<div class="tip fix">
-								<div class="right icon">
-									<span class="xin">3</span>
-									<span class="look">3</span>
-								</div>
-							</div>
-						</div>
-					</a>
-				</li>
-				<li>
-					<a href="detail.html">
-						<img src="../img/g1.jpg" width="220" height="130"/>
-						<div class="info">
-							<p class="name">花万元把蜗居秒变“豪宅”？这12件家具就能帮你办到</p>
-							<div class="tip fix">
-								<div class="right icon">
-									<span class="xin">3</span>
-									<span class="look">3</span>
-								</div>
-							</div>
-						</div>
-					</a>
-				</li>
-				<li>
-					<a href="detail.html">
-						<img src="../img/g2.jpg" width="220" height="130"/>
-						<div class="info">
-							<p class="name">到底有没有完美的iPhone手机配件，答案都在这里</p>
-							<div class="tip fix">
-								<div class="right icon">
-									<span class="xin">3</span>
-									<span class="look">3</span>
-								</div>
-							</div>
-						</div>
-					</a>
-				</li>
-				<li>
-					<a href="detail.html">
-						<img src="../img/g3.jpg" width="220" height="130"/>
-						<div class="info">
-							<p class="name">2016，这8支钢笔够你装逼一整年</p>
-							<div class="tip fix">
-								<div class="right icon">
-									<span class="xin">3</span>
-									<span class="look">3</span>
-								</div>
-							</div>
-						</div>
-					</a>
-				</li>
-				<li>
-					<a href="detail.html">
-						<img src="../img/g4.jpg" width="220" height="130"/>
-						<div class="info">
-							<p class="name">他用12年找一把完美 剃须刀，给你2万字终极购买指南</p>
-							<div class="tip fix">
-								<div class="right icon">
-									<span class="xin">3</span>
-									<span class="look">3</span>
-								</div>
-							</div>
-						</div>
-					</a>
-				</li>
+
 			</ul>
 			<div class="playMore">
-				<a href="javascript:void(0);" class="more-btn" id="guid-btn">点击加载更多</a>
+				<a  id="pageNum"  class="more-btn" id="guid-btn">点击加载更多</a>
 			</div>
 		</div>
 	</section>

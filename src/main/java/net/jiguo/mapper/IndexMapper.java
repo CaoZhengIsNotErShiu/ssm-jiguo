@@ -1,7 +1,6 @@
 package net.jiguo.mapper;
 
 import net.jiguo.model.JgTryItem;
-import net.jiguo.model.JgTryReport;
 
 import java.util.List;
 

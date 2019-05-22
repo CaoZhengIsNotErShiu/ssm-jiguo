@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.jiguo.mapper.GuideMapper">
+    <!--用户表-->
+    <resultMap id="indexMap" type="net.jiguo.model.VO.JgGuideVO">
+        <id property="id" column="ID" jdbcType="INTEGER" />
+        <result property="title" column="title" jdbcType="VARCHAR" />
+        <result property="image" column="image" jdbcType="VARCHAR" />
+        <result property="issueDate" column="issue_date" jdbcType="DATE" />
+    </resultMap>
+
+    <select id="getGuideNewest" resultMap="indexMap" parameterType="net.jiguo.model.VO.JgGuideVO">
+        SELECT
+            *
+        FROM
+            data.jg_guide
+        ORDER BY issue_date DESC
+    </select>
+
+
+    <select id="getGuideThumb" resultType="java.lang.Integer" >
+        SELECT
+            COUNT(1)
+        FROM
+            data.jg_guide_thumb
+        WHERE
+            guide_id = #{id};
+    </select>
+
+    <select id="getGuideComment" resultType="java.lang.Integer" >
+        SELECT
+            COUNT(1)
+        FROM
+            data.jg_guide_comment
+        WHERE
+            guide_id = #{id};
+    </select>
+
+
+
+
+</mapper>
